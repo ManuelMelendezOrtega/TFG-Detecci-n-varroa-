@@ -1,0 +1,110 @@
+<?xml version="1.0" ?>
+<annotation>
+	
+	
+	<folder/>
+	
+	
+	<filename>1000014172_0_2_jpg.rf.8756e375018c88e9349697ae094353fc_aug3.jpg</filename>
+	
+	
+	<path>1000014172_0_2_jpg.rf.8756e375018c88e9349697ae094353fc_aug3.jpg</path>
+	
+	
+	<source>
+		
+		
+		<database>roboflow.com</database>
+		
+	
+	</source>
+	
+	
+	<size>
+		
+		
+		<width>640</width>
+		
+		
+		<height>640</height>
+		
+		
+		<depth>3</depth>
+		
+	
+	</size>
+	
+	
+	<segmented>0</segmented>
+	
+	
+	<metadata>
+	</metadata>
+	
+
+	<object>
+		<name>varroa</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>568</xmin>
+			<ymin>32</ymin>
+			<xmax>593</xmax>
+			<ymax>70</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>varroa</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>510</xmin>
+			<ymin>39</ymin>
+			<xmax>532</xmax>
+			<ymax>71</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>varroa</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>159</xmin>
+			<ymin>217</ymin>
+			<xmax>197</xmax>
+			<ymax>290</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>varroa</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>470</xmin>
+			<ymin>463</ymin>
+			<xmax>523</xmax>
+			<ymax>522</ymax>
+		</bndbox>
+	</object>
+	<object>
+		<name>varroa</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>478</xmin>
+			<ymin>517</ymin>
+			<xmax>523</xmax>
+			<ymax>574</ymax>
+		</bndbox>
+	</object>
+</annotation>

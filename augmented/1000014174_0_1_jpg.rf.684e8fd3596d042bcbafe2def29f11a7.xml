@@ -1,0 +1,45 @@
+<?xml version="1.0" ?>
+<annotation>
+	
+	
+	<folder/>
+	
+	
+	<filename>1000014174_0_1_jpg.rf.684e8fd3596d042bcbafe2def29f11a7.jpg</filename>
+	
+	
+	<path>1000014174_0_1_jpg.rf.684e8fd3596d042bcbafe2def29f11a7.jpg</path>
+	
+	
+	<source>
+		
+		
+		<database>roboflow.com</database>
+		
+	
+	</source>
+	
+	
+	<size>
+		
+		
+		<width>640</width>
+		
+		
+		<height>640</height>
+		
+		
+		<depth>3</depth>
+		
+	
+	</size>
+	
+	
+	<segmented>0</segmented>
+	
+	
+	<metadata>
+	</metadata>
+	
+
+</annotation>
