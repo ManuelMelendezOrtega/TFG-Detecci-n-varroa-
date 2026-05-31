@@ -1,0 +1,13 @@
+C:\Users\manum\Desktop\TFG VARROA\AppWeb\basico\src\main\java\com\sistemasdistr\basico\BasicoApplication.java
+C:\Users\manum\Desktop\TFG VARROA\AppWeb\basico\src\main\java\com\sistemasdistr\basico\config\CustomUserDetailsService.java
+C:\Users\manum\Desktop\TFG VARROA\AppWeb\basico\src\main\java\com\sistemasdistr\basico\config\SecurityConfig.java
+C:\Users\manum\Desktop\TFG VARROA\AppWeb\basico\src\main\java\com\sistemasdistr\basico\controller\maincontroller.java
+C:\Users\manum\Desktop\TFG VARROA\AppWeb\basico\src\main\java\com\sistemasdistr\basico\dto\AnalisisFotoDTO.java
+C:\Users\manum\Desktop\TFG VARROA\AppWeb\basico\src\main\java\com\sistemasdistr\basico\model\FotoDetalle.java
+C:\Users\manum\Desktop\TFG VARROA\AppWeb\basico\src\main\java\com\sistemasdistr\basico\model\Role.java
+C:\Users\manum\Desktop\TFG VARROA\AppWeb\basico\src\main\java\com\sistemasdistr\basico\model\SesionMuestreo.java
+C:\Users\manum\Desktop\TFG VARROA\AppWeb\basico\src\main\java\com\sistemasdistr\basico\model\User.java
+C:\Users\manum\Desktop\TFG VARROA\AppWeb\basico\src\main\java\com\sistemasdistr\basico\repository\FotoDetalleRepository.java
+C:\Users\manum\Desktop\TFG VARROA\AppWeb\basico\src\main\java\com\sistemasdistr\basico\repository\RoleRepository.java
+C:\Users\manum\Desktop\TFG VARROA\AppWeb\basico\src\main\java\com\sistemasdistr\basico\repository\SesionMuestreoRepository.java
+C:\Users\manum\Desktop\TFG VARROA\AppWeb\basico\src\main\java\com\sistemasdistr\basico\repository\UserRepository.java

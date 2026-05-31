@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Varroa Detector - Inicio</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            display: flex; flex-direction: column; height: 100vh; margin: 0; 
+        }
+        .main-wrapper { flex: 1; display: flex; justify-content: center; align-items: center; }
+        .container-box { 
+            background: white; padding: 50px; border-radius: 20px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); text-align: center; max-width: 600px; width: 90%;
+        }
+        .navbar-custom { background-color: #2c3e50; padding: 10px 20px; }
+        .btn-custom { padding: 15px 25px; font-weight: bold; border-radius: 10px; transition: all 0.3s; display: flex; align-items: center; justify-content: center; }
+        .btn-custom:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-custom shadow-sm">
+        <div class="container-fluid">
+            <span class="navbar-brand text-white fw-bold"><i class="fas fa-bee text-warning me-2"></i>VARROA DETECTOR</span>
+            
+            <div class="d-flex align-items-center">
+                <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" href="/admin/usuarios" class="btn btn-danger btn-sm fw-bold me-3 shadow-sm">
+                    <i class="fas fa-shield-halved me-1"></i> Panel Admin
+                </a>
+                
+                <form th:action="@{/logout}" method="post" class="m-0">
+                    <button type="submit" class="btn btn-outline-light btn-sm fw-bold"><i class="fas fa-sign-out-alt me-1"></i> Cerrar Sesión</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <div class="main-wrapper">
+        <div class="container-box">
+            <h2 class="fw-bold text-dark mb-2">Panel de Control</h2>
+            <p class="text-muted mb-4">Gestión de Salud Apícola con IA</p>
+            <hr class="my-4">
+            <div class="row g-3">
+                <div class="col-12">
+                    <a href="/nuevo-analisis" class="btn btn-warning btn-lg btn-custom w-100 text-white shadow-sm"><i class="fas fa-search me-2"></i> NUEVO ANÁLISIS</a>
+                </div>
+                <div class="col-12">
+                    <a href="/mis-analisis" class="btn btn-outline-dark btn-lg btn-custom w-100"><i class="fas fa-chart-line me-2"></i> VER MI HISTORIAL</a>
+                </div>
+            </div>
+            <p class="mt-4 text-muted small">Usuario activo: <span class="fw-bold" th:text="${#authentication.name}">Usuario</span></p>
+        </div>
+    </div>
+</body>
+</html>

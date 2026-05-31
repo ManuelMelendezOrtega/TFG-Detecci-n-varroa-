@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Login - Varroa Detector</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light d-flex align-items-center justify-content-center" style="height: 100vh;">
+    <div class="card shadow p-4" style="width: 350px; border-radius: 15px;">
+        <h3 class="text-center mb-4 fw-bold text-warning">Acceso</h3>
+        <div th:if="${param.error}" class="alert alert-danger small">Usuario o clave incorrectos</div>
+        <div th:if="${param.logout}" class="alert alert-info small">Sesión cerrada</div>
+        <div th:if="${param.registrado}" class="alert alert-success small">¡Registro con éxito!</div>
+        <form th:action="@{/login}" method="post">
+            <div class="mb-3">
+                <label class="form-label">Usuario</label>
+                <input type="text" name="username" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Contraseña</label>
+                <input type="password" name="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-warning w-100 fw-bold">ENTRAR</button>
+        </form>
+        <div class="text-center mt-3">
+            <a th:href="@{/registro}" class="text-muted small">¿No tienes cuenta? Regístrate</a>
+        </div>
+    </div>
+</body>
+</html>

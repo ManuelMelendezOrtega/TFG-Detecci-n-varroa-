@@ -1,0 +1,58 @@
+<?xml version="1.0" ?>
+<annotation>
+	
+	
+	<folder/>
+	
+	
+	<filename>1000014175_0_1_jpg.rf.83065b6f0781f884114e6f5e0248b0e7.jpg</filename>
+	
+	
+	<path>1000014175_0_1_jpg.rf.83065b6f0781f884114e6f5e0248b0e7.jpg</path>
+	
+	
+	<source>
+		
+		
+		<database>roboflow.com</database>
+		
+	
+	</source>
+	
+	
+	<size>
+		
+		
+		<width>640</width>
+		
+		
+		<height>640</height>
+		
+		
+		<depth>3</depth>
+		
+	
+	</size>
+	
+	
+	<segmented>0</segmented>
+	
+	
+	<metadata>
+	</metadata>
+	
+
+	<object>
+		<name>varroa</name>
+		<pose>Unspecified</pose>
+		<truncated>0</truncated>
+		<difficult>0</difficult>
+		<occluded>0</occluded>
+		<bndbox>
+			<xmin>604</xmin>
+			<ymin>57</ymin>
+			<xmax>639</xmax>
+			<ymax>92</ymax>
+		</bndbox>
+	</object>
+</annotation>
