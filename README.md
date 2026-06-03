@@ -23,4 +23,4 @@ El proyecto está diseñado para funcionar en local y configurarse automáticame
 
 ## Autor y Licencia
 * **Autor:** Manuel Meléndez Ortega
-* **Licencia:** MIT (Software libre y de código abierto).
+* **Licencia:** MIT.
