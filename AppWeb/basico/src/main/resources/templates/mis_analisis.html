@@ -10,7 +10,7 @@
         body { background-color: #f4f7f6; font-family: 'Segoe UI', sans-serif; }
         .navbar-custom { background-color: #2c3e50; border-bottom: 3px solid #f39c12; }
         .card { border: none; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .chart-container { height: 350px; background: white; border-radius: 12px; padding: 15px; border: 1px solid #dee2e6; position: relative; }
+        .chart-container { height: 350px; background: white; border-radius: 12px; padding: 15px; border: 1px solid #dee2e6; position: relative; cursor: pointer; }
         .filter-box { background: white; padding: 25px; border-radius: 12px; border: 1px solid #dee2e6; margin-bottom: 25px; }
         .stat-card { border-top: 5px solid #f39c12; }
         .img-preview { width: 100%; height: 160px; object-fit: cover; border-radius: 8px; border: 1px solid #ddd; }
@@ -22,11 +22,9 @@
     <div class="container">
         <a class="navbar-brand fw-bold" href="/"><i class="fas fa-bee text-warning me-2"></i>VARROA DETECTOR</a>
         <div class="d-flex align-items-center">
-            
             <a th:if="${#authorization.expression('hasRole(''ADMIN'')')}" href="/admin/usuarios" class="btn btn-danger btn-sm fw-bold me-3">
                 <i class="fas fa-shield-halved me-1"></i> Panel Admin
             </a>
-
             <a href="/" class="btn btn-outline-light btn-sm me-3">Inicio</a>
             <form th:action="@{/logout}" method="post" class="m-0"><button type="submit" class="btn btn-danger btn-sm">Salir</button></form>
         </div>
@@ -50,7 +48,8 @@
                 <select id="fModo" class="form-select">
                     <option value="dia">Vista por Días</option>
                     <option value="mes">Vista por Meses</option>
-                    <option value="año">Resumen Anual</option> </select>
+                    <option value="año">Resumen Anual</option> 
+                </select>
             </div>
             <div class="col-md-3">
                 <button type="button" class="btn btn-warning w-100 fw-bold text-white shadow-sm" onclick="ejecutarAnalisis()">
@@ -58,13 +57,24 @@
                 </button>
             </div>
         </div>
-        
         <div class="mt-3 text-end">
             <button class="btn btn-link btn-sm text-decoration-none text-muted" onclick="location.reload()">
                 <i class="fas fa-undo me-1"></i> Limpiar Filtros
             </button>
         </div>
     </div>
+
+    <!-- BLOQUE DE ALERTA DINÁMICO (Controlado por JS) -->
+    <div id="alertaBiologica" class="alert shadow-sm mb-4 border-0" style="display: none; border-left: 5px solid #0d6efd !important;" role="alert">
+        <div class="d-flex align-items-center">
+            <i id="iconoAlertaBiologica" class="fas fa-info-circle fa-2x me-3"></i>
+            <div>
+                <h5 class="alert-heading fw-bold mb-1">Evaluación de Tratamiento (Ciclo de 21 Días)</h5>
+                <p id="textoAlertaBiologica" class="mb-0"></p>
+            </div>
+        </div>
+    </div>
+    <!-- FIN BLOQUE DE ALERTA -->
 
     <div class="row g-4 mb-4 text-center">
         <div class="col-md-4">
@@ -88,9 +98,10 @@
     </div>
 
     <div class="card p-4 mb-5 shadow-sm">
-        <div class="chart-container">
+        <div class="chart-container" title="Haz clic en un punto de la gráfica para analizar el ciclo biológico">
             <canvas id="graficaFinal"></canvas>
         </div>
+        <p class="text-center text-muted small mt-2 mb-0"><i class="fas fa-hand-pointer me-1"></i> Haz clic sobre un análisis en el que, 21 días antes, hayas aplicado un tratamiento para comprobar su efectividad.</p>
     </div>
 
     <h4 class="fw-bold mb-3">Historial Detallado</h4>
@@ -157,13 +168,46 @@
 <script th:inline="javascript">
     const dbSimplificada = /*[[${datosGrafica}]]*/ [];
     let chartObj = null;
+    function analizarCicloBiologico(fechaSeleccionada, mediaActual) {
+        let fechaObj = new Date(fechaSeleccionada);
+        fechaObj.setDate(fechaObj.getDate() - 21);
+        let fecha21DiasStr = fechaObj.toISOString().split('T')[0];
+        let analisisPrevios = dbSimplificada.filter(s => s.fecha.substring(0, 10) === fecha21DiasStr);
+        
+        const alertaDiv = document.getElementById('alertaBiologica');
+        const alertaTexto = document.getElementById('textoAlertaBiologica');
+        const alertaIcono = document.getElementById('iconoAlertaBiologica');
+
+        if (analisisPrevios.length > 0) {
+            let sumaV = 0, sumaF = 0;
+            analisisPrevios.forEach(a => { sumaV += (a.media * a.numFotos); sumaF += a.numFotos; });
+            let mediaPasada = (sumaV / sumaF).toFixed(2);
+            let mActual = parseFloat(mediaActual).toFixed(2);
+
+            if (parseFloat(mActual) < parseFloat(mediaPasada)) {
+                alertaDiv.style.backgroundColor = "#d1e7dd"; 
+                alertaDiv.style.borderLeftColor = "#198754";
+                alertaIcono.className = "fas fa-check-circle fa-2x me-3 text-success";
+                alertaTexto.innerHTML = `El tratamiento parece haber funcionado correctamente, puesto que la media de varroas en el día analizado (<strong>${fechaSeleccionada}</strong>) es de <strong>${mActual}</strong>, y la media registrada el día del tratamiento (<strong>${fecha21DiasStr}</strong>) es de <strong>${mediaPasada}</strong>.`;            } else {
+                alertaDiv.style.backgroundColor = "#f8d7da"; 
+                alertaDiv.style.borderLeftColor = "#dc3545";
+                alertaIcono.className = "fas fa-exclamation-triangle fa-2x me-3 text-danger";
+                alertaTexto.innerHTML = `La media de varroas ha aumentado de <strong>${mediaPasada}</strong> (el <strong>${fecha21DiasStr}</strong>) a <strong>${mActual}</strong> (el <strong>${fechaSeleccionada}</strong>). Por ende, o el tratamiento no ha funcionado, o bien no ha sido aplicado correctamente.`;
+            }
+
+            alertaDiv.style.display = "block";
+        } else {
+            alertaDiv.style.display = "none";
+        }
+    }
 
     function ejecutarAnalisis() {
         const desde = document.getElementById('fDesde').value;
         const hasta = document.getElementById('fHasta').value;
         const modo = document.getElementById('fModo').value;
 
-        // 1. FILTRAR DATOS
+        document.getElementById('alertaBiologica').style.display = 'none';
+
         let filtrados = dbSimplificada.filter(s => {
             const f = s.fecha.substring(0, 10);
             if (desde && f < desde) return false;
@@ -171,7 +215,6 @@
             return true;
         });
 
-        // 2. FILTRAR TABLA (Oculta las filas que no cumplen las fechas)
         document.querySelectorAll('.fila-dato').forEach(fila => {
             const fFila = fila.getAttribute('data-fecha').substring(0, 10);
             let visible = true;
@@ -180,15 +223,12 @@
             fila.style.display = visible ? "" : "none";
         });
 
-        // 3. AGRUPACIÓN MATEMÁTICA PONDERADA (Sumando varroas y fotos)
         const grupos = {};
         filtrados.forEach(s => {
             let clave = s.fecha.substring(0, 10);
             if (modo === 'mes') clave = clave.substring(0, 7);
             if (modo === 'año') clave = clave.substring(0, 4);
-
             if (!grupos[clave]) grupos[clave] = { varroas: 0, fotos: 0 };
-            
             grupos[clave].varroas += (s.media * s.numFotos);
             grupos[clave].fotos += s.numFotos;
         });
@@ -196,15 +236,10 @@
         const labels = Object.keys(grupos).sort();
         const valores = labels.map(l => (grupos[l].varroas / grupos[l].fotos).toFixed(2));
 
-        // 4. ACTUALIZAR CARDS SUPERIORES
         document.getElementById('resTotal').innerText = filtrados.length;
         if (filtrados.length > 0) {
-            let sumaGlobalVarroas = 0;
-            let sumaGlobalFotos = 0;
-            filtrados.forEach(s => { 
-                sumaGlobalVarroas += (s.media * s.numFotos); 
-                sumaGlobalFotos += s.numFotos; 
-            });
+            let sumaGlobalVarroas = 0, sumaGlobalFotos = 0;
+            filtrados.forEach(s => { sumaGlobalVarroas += (s.media * s.numFotos); sumaGlobalFotos += s.numFotos; });
             document.getElementById('resMedia').innerText = (sumaGlobalVarroas / sumaGlobalFotos).toFixed(2);
             document.getElementById('resMax').innerText = Math.max(...valores.map(Number)).toFixed(2);
         } else {
@@ -212,7 +247,6 @@
             document.getElementById('resMax').innerText = "0.00";
         }
 
-        // 5. DIBUJAR GRÁFICA
         const ctx = document.getElementById('graficaFinal').getContext('2d');
         if (chartObj) chartObj.destroy();
 
@@ -228,15 +262,30 @@
                     fill: true,
                     tension: 0.3,
                     borderWidth: 3,
-                    pointRadius: 5
+                    pointRadius: 6,
+                    hoverRadius: 8
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                scales: { y: { beginAtZero: true } }
+                scales: { y: { beginAtZero: true } },
+                onClick: (event, elements) => {
+                    if (elements.length > 0) {
+                        const index = elements[0].index;
+                        const fechaPunto = chartObj.data.labels[index];
+                        const valorPunto = chartObj.data.datasets[0].data[index];
+                        if(modo === 'dia'){
+                            analizarCicloBiologico(fechaPunto, valorPunto);
+                        }
+                    }
+                }
             }
         });
+
+        if (modo === 'dia' && labels.length > 0) {
+            analizarCicloBiologico(labels[labels.length - 1], valores[valores.length - 1]);
+        }
     }
 
     window.onload = function() {
