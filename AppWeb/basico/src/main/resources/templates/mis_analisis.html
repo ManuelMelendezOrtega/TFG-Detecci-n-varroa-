@@ -166,18 +166,28 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script th:inline="javascript">
+    // Los datos de la base de datos (inyectados desde Java)
     const dbSimplificada = /*[[${datosGrafica}]]*/ [];
-    let chartObj = null;
+    let chartObj = null; // Variable para guardar y actualizar la gráfica
+
+    /**
+     * LÓGICA DE NEGOCIO: Ciclo de la Varroa (21 Días).
+     * Compara el análisis del día seleccionado con la media de varroas de hace exactamente 3 semanas.
+     */
     function analizarCicloBiologico(fechaSeleccionada, mediaActual) {
+        // 1. Calculamos la fecha de hace 21 días
         let fechaObj = new Date(fechaSeleccionada);
         fechaObj.setDate(fechaObj.getDate() - 21);
         let fecha21DiasStr = fechaObj.toISOString().split('T')[0];
+        
+        // 2. Buscamos si el apicultor hizo algún análisis ese día
         let analisisPrevios = dbSimplificada.filter(s => s.fecha.substring(0, 10) === fecha21DiasStr);
         
         const alertaDiv = document.getElementById('alertaBiologica');
         const alertaTexto = document.getElementById('textoAlertaBiologica');
         const alertaIcono = document.getElementById('iconoAlertaBiologica');
 
+        // 3. Si hay datos antiguos, comparamos las medias para ver si la plaga ha bajado
         if (analisisPrevios.length > 0) {
             let sumaV = 0, sumaF = 0;
             analisisPrevios.forEach(a => { sumaV += (a.media * a.numFotos); sumaF += a.numFotos; });
@@ -185,22 +195,29 @@
             let mActual = parseFloat(mediaActual).toFixed(2);
 
             if (parseFloat(mActual) < parseFloat(mediaPasada)) {
+                // ÉXITO: Hay menos varroas ahora que hace 21 días (Tratamiento efectivo)
                 alertaDiv.style.backgroundColor = "#d1e7dd"; 
                 alertaDiv.style.borderLeftColor = "#198754";
                 alertaIcono.className = "fas fa-check-circle fa-2x me-3 text-success";
-                alertaTexto.innerHTML = `El tratamiento parece haber funcionado correctamente, puesto que la media de varroas en el día analizado (<strong>${fechaSeleccionada}</strong>) es de <strong>${mActual}</strong>, y la media registrada el día del tratamiento (<strong>${fecha21DiasStr}</strong>) es de <strong>${mediaPasada}</strong>.`;            } else {
+                alertaTexto.innerHTML = `El tratamiento parece haber funcionado correctamente, puesto que la media en el día analizado (<strong>${fechaSeleccionada}</strong>) es de <strong>${mActual}</strong>, y la media registrada el día del tratamiento (<strong>${fecha21DiasStr}</strong>) era de <strong>${mediaPasada}</strong>.`;            
+            } else {
+                // ALERTA: La plaga ha subido o se mantiene (Fallo en el tratamiento)
                 alertaDiv.style.backgroundColor = "#f8d7da"; 
                 alertaDiv.style.borderLeftColor = "#dc3545";
                 alertaIcono.className = "fas fa-exclamation-triangle fa-2x me-3 text-danger";
                 alertaTexto.innerHTML = `La media de varroas ha aumentado de <strong>${mediaPasada}</strong> (el <strong>${fecha21DiasStr}</strong>) a <strong>${mActual}</strong> (el <strong>${fechaSeleccionada}</strong>). Por ende, o el tratamiento no ha funcionado, o bien no ha sido aplicado correctamente.`;
             }
-
             alertaDiv.style.display = "block";
         } else {
+            // Si no hay datos de hace 21 días, ocultamos el mensaje
             alertaDiv.style.display = "none";
         }
     }
 
+    /**
+     * RECOPILACIÓN Y DIBUJO DE DATOS:
+     * Aplica los filtros de fecha seleccionados por el usuario y redibuja la gráfica.
+     */
     function ejecutarAnalisis() {
         const desde = document.getElementById('fDesde').value;
         const hasta = document.getElementById('fHasta').value;
@@ -208,6 +225,7 @@
 
         document.getElementById('alertaBiologica').style.display = 'none';
 
+        // 1. Filtramos los datos que están dentro del rango de fechas elegido
         let filtrados = dbSimplificada.filter(s => {
             const f = s.fecha.substring(0, 10);
             if (desde && f < desde) return false;
@@ -215,6 +233,7 @@
             return true;
         });
 
+        // 2. Ocultamos o mostramos las filas de la tabla HTML (sin recargar la página)
         document.querySelectorAll('.fila-dato').forEach(fila => {
             const fFila = fila.getAttribute('data-fecha').substring(0, 10);
             let visible = true;
@@ -223,6 +242,7 @@
             fila.style.display = visible ? "" : "none";
         });
 
+        // 3. Agrupamos los datos (por día, por mes o por año) según lo que pidió el usuario
         const grupos = {};
         filtrados.forEach(s => {
             let clave = s.fecha.substring(0, 10);
@@ -233,9 +253,11 @@
             grupos[clave].fotos += s.numFotos;
         });
 
+        // 4. Preparamos las coordenadas X (fechas) e Y (medias de varroas)
         const labels = Object.keys(grupos).sort();
         const valores = labels.map(l => (grupos[l].varroas / grupos[l].fotos).toFixed(2));
 
+        // 5. Actualizamos las "tarjetas resumen" de arriba con los totales del periodo filtrado
         document.getElementById('resTotal').innerText = filtrados.length;
         if (filtrados.length > 0) {
             let sumaGlobalVarroas = 0, sumaGlobalFotos = 0;
@@ -247,6 +269,7 @@
             document.getElementById('resMax').innerText = "0.00";
         }
 
+        // 6. Destruimos la gráfica vieja y dibujamos la nueva usando Chart.js
         const ctx = document.getElementById('graficaFinal').getContext('2d');
         if (chartObj) chartObj.destroy();
 
@@ -270,6 +293,7 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 scales: { y: { beginAtZero: true } },
+                // Evento: Al hacer clic en un punto, se dispara el cálculo de los 21 días
                 onClick: (event, elements) => {
                     if (elements.length > 0) {
                         const index = elements[0].index;
@@ -283,11 +307,13 @@
             }
         });
 
+        // Por defecto, calculamos la alerta para el último día analizado
         if (modo === 'dia' && labels.length > 0) {
             analizarCicloBiologico(labels[labels.length - 1], valores[valores.length - 1]);
         }
     }
 
+    // Al arrancar la página, ejecutamos la gráfica por primera vez
     window.onload = function() {
         if (dbSimplificada && dbSimplificada.length > 0) {
             ejecutarAnalisis();

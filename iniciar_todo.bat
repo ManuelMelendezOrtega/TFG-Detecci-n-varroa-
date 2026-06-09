@@ -3,7 +3,7 @@ echo ==========================================
 echo    INICIANDO VARROA DETECTOR
 echo ==========================================
 
-echo [1/2] Arrancando Inteligencia Artificial (Python)...
+echo [1/2] Arrancando Inteligencia Artificial...
 IF NOT EXIST ".venv\" (
     echo [!] Detectado ordenador nuevo. Creando entorno virtual e instalando librerias...
     echo [!] Esto puede tardar unos minutos la primera vez.
@@ -14,7 +14,7 @@ IF NOT EXIST ".venv\" (
 
 start "API Python" cmd /k "call .venv\Scripts\activate.bat && cd AppWeb\api-python && python app.py"
 
-echo [2/2] Arrancando Servidor Web y Base de Datos (Java)...
+echo [2/2] Arrancando Servidor Web y Base de Datos...
 cd AppWeb\basico
 start "Web Java" cmd /k "java -jar target\basico-0.0.1-SNAPSHOT.jar"
 

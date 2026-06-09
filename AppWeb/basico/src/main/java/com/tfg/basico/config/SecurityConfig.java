@@ -10,6 +10,11 @@ import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Clase de configuración global de Spring Security.
+ * Define las políticas de acceso (RBAC - Role Based Access Control), 
+ * el enrutamiento de seguridad y los algoritmos de encriptación.
+ */
 @Configuration
 public class SecurityConfig {
 
@@ -19,6 +24,11 @@ public class SecurityConfig {
         this.customUserDetailsService = customUserDetailsService;
     }
 
+    /**
+     * Define el algoritmo de hash para las contraseñas.
+     * Utiliza el DelegatingPasswordEncoder para adaptarse dinámicamente a 
+     * algoritmos modernos (como BCrypt) garantizando la escalabilidad de la seguridad.
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
@@ -29,14 +39,22 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
+    /**
+     * Configuración del filtro de seguridad HTTP (Pipeline de Spring Security).
+     * Establece qué rutas son públicas, cuáles requieren autenticación y gestiona
+     * los flujos de inicio y cierre de sesión.
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            .csrf(AbstractHttpConfigurer::disable)
+            .csrf(AbstractHttpConfigurer::disable) // Deshabilitado para simplificar peticiones POST locales/API
             .userDetailsService(customUserDetailsService)
             .authorizeHttpRequests(auth -> auth
+                // Rutas públicas: estáticos, recursos de la IA y pantallas de entrada
                 .requestMatchers("/", "/login", "/registro", "/css/**", "/js/**", "/detections/**").permitAll()
+                // Rutas protegidas por Rol
                 .requestMatchers("/admin/**").hasRole("ADMIN")
+                // Cualquier otra ruta requiere estar logueado
                 .anyRequest().authenticated() 
             )
             .formLogin(form -> form
