@@ -17,7 +17,7 @@ El proyecto está diseñado para funcionar en local y configurarse automáticame
 
 1. **Requisitos:** Asegúrate de tener instalados **Git**, **Java (JDK 17+)** y **Python (3.9+)** (con la opción *Add Python to PATH* marcada en la instalación).
 2. **Descarga:** Abre una terminal o consola de comandos y clona este repositorio ejecutando:
-   git clone https://github.com/ManuelMelendezOrtega/TFG-Detecci-n-varroa-.git
+   git clone https://github.com/ManuelMelendezOrtega/TFG-Deteccion-varroa.git
 3. **Arranque:** Entra en la carpeta que se acaba de descargar (`TFG-Detecci-n-varroa-`) y haz doble clic en el archivo **`iniciar_todo.bat`**.
 4. **Uso:** El script instalará las librerías necesarias y levantará los servidores. Cuando termine, abre tu navegador y entra en: **http://localhost:8099**
 
